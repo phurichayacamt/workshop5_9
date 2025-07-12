@@ -1,7 +1,7 @@
 package services
 
-import models.Book
-import models.LendingRecord
+import ex.Book
+import ex.LendingRecord
 import repositories.BookRepository
 import repositories.LendingRecordRepository
 

@@ -11,8 +11,14 @@ import routes.bookRoutes
 import routes.lendingRoutes
 import services.LibraryService
 
+val bookRepository = BookRepository()
+val lendingRecordRepository = LendingRecordRepository()
+val libraryService = LibraryService(bookRepository, lendingRecordRepository)
+
+
 fun main() {
     embeddedServer(Netty, port = 8081, host = "0.0.0.0", module = Application::module)
+    //embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
         .start(wait = true)
 
 }
@@ -22,9 +28,6 @@ fun Application.module() {
         json()
     }
 
-    val bookRepository = BookRepository()
-    val lendingRecordRepository = LendingRecordRepository()
-    val libraryService = LibraryService(bookRepository, lendingRecordRepository)
 
     routing {
         bookRoutes(libraryService)

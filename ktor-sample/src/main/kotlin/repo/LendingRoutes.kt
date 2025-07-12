@@ -1,6 +1,6 @@
 package repositories
 
-import models.LendingRecord
+import ex.LendingRecord
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -9,50 +9,32 @@ class LendingRecordRepository {
     private var nextId = 1
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
-    fun getAllLendingRecords(): List<LendingRecord> = lendingRecords.toList()
+    fun getAllLendingRecords(): List<LendingRecord> = lendingRecords
 
     fun getLendingRecordById(id: Int): LendingRecord? = lendingRecords.find { it.id == id }
 
-    fun getLendingRecordsByBookId(bookId: Int): List<LendingRecord> =
-        lendingRecords.filter { it.bookId == bookId }
+    fun getLendingRecordsByBookId(bookId: Int): List<LendingRecord> = lendingRecords.filter { it.bookId == bookId }
 
     fun addLendingRecord(bookId: Int, borrowerName: String): LendingRecord {
-        val checkoutDate = LocalDateTime.now().format(formatter)
-        val record = LendingRecord(nextId++, bookId, borrowerName, checkoutDate)
+        val record = LendingRecord(nextId++, bookId, borrowerName, LocalDateTime.now().format(formatter))
         lendingRecords.add(record)
         return record
     }
 
     fun updateLendingRecord(id: Int, bookId: Int, borrowerName: String): LendingRecord? {
-        val record = lendingRecords.find { it.id == id }
-        if (record != null) {
-            val updatedRecord = LendingRecord(record.id, bookId, borrowerName, record.checkoutDate, record.returnDate)
-            val index = lendingRecords.indexOf(record)
-            lendingRecords[index] = updatedRecord
-            return updatedRecord
+        return lendingRecords.find { it.id == id }?.apply {
+            val updatedRecord = LendingRecord(id, bookId, borrowerName, checkoutDate, returnDate)
+            lendingRecords[lendingRecords.indexOf(this)] = updatedRecord
         }
-        return record
     }
 
-    fun deleteLendingRecord(id: Int): Boolean {
-        val record = lendingRecords.find { it.id == id }
-        return if (record != null) {
-            lendingRecords.remove(record)
-            true
-        } else {
-            false
-        }
-    }
+    fun deleteLendingRecord(id: Int): Boolean = lendingRecords.removeIf { it.id == id }
 
     fun returnBook(id: Int): Boolean {
-        val record = lendingRecords.find { it.id == id }
-        if (record != null && record.returnDate == null) {
-            record.returnDate = LocalDateTime.now().format(formatter)
-            return true
-        }
-        return false
+        return lendingRecords.find { it.id == id && it.returnDate == null }?.apply {
+            returnDate = LocalDateTime.now().format(formatter)
+        } != null
     }
 
-    fun getActiveLendingRecords(): List<LendingRecord> =
-        lendingRecords.filter { it.returnDate == null }
+    fun getActiveLendingRecords(): List<LendingRecord> = lendingRecords.filter { it.returnDate == null }
 }
