@@ -19,6 +19,7 @@ val libraryService = LibraryService(bookRepository, lendingRecordRepository)
 fun main() {
     embeddedServer(Netty, port = 8081, host = "0.0.0.0", module = Application::module)
     //embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
+        //Please use port 8081 because port 8080 has a problem with me. No matter how much I kill it, it won't die.
         .start(wait = true)
 
 }
@@ -38,4 +39,5 @@ fun Application.module() {
             call.respondText("OK")
         }
     }
-} 
+}
+//Please use port 8081 because port 8080 has a problem with me. No matter how much I kill it, it won't die.

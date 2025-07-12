@@ -10,7 +10,7 @@ class LibraryService(
     private val lendingRecordRepository: LendingRecordRepository
 ) {
 
-    // Book operations
+
     fun getAllBooks(): List<Book> = bookRepository.getAllBooks()
 
     fun getBookById(id: Int): Book? = bookRepository.getBookById(id)
@@ -23,7 +23,7 @@ class LibraryService(
 
     fun deleteBook(id: Int): Boolean = bookRepository.deleteBook(id)
 
-    // Lending operations
+
     fun getAllLendingRecords(): List<LendingRecord> =
         lendingRecordRepository.getAllLendingRecords()
 
@@ -43,10 +43,10 @@ class LibraryService(
             return null // Book is not available
         }
 
-        // Create lending record
+
         val record = lendingRecordRepository.addLendingRecord(bookId, borrowerName)
 
-        // Update book availability
+
         bookRepository.updateBookAvailability(bookId, false)
 
         return record
@@ -61,13 +61,12 @@ class LibraryService(
     fun returnBook(lendingRecordId: Int): Boolean {
         val record = lendingRecordRepository.getLendingRecordById(lendingRecordId)
         if (record == null || record.returnDate != null) {
-            return false // Record not found or already returned
+            return false
         }
 
-        // Update return date
+
         val success = lendingRecordRepository.returnBook(lendingRecordId)
         if (success) {
-            // Update book availability back to true
             bookRepository.updateBookAvailability(record.bookId, true)
         }
 
@@ -77,3 +76,4 @@ class LibraryService(
     fun getActiveLendingRecords(): List<LendingRecord> =
         lendingRecordRepository.getActiveLendingRecords()
 }
+//Please use port 8081 because port 8080 has a problem with me. No matter how much I kill it, it won't die.
